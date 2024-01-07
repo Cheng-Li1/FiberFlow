@@ -58,8 +58,8 @@ const unsigned char swap_function[4096] = {
 };
 
 static void Fiber_wrapper(Fiber_t handle) {
-  void (*function)(void*) = (void (*)(void*))(handle->func);
-  function((void *) handle->data);
+  void (*function)(void) = (void (*)(void))(handle->func);
+  function();
   // Crash the program intentionally if entry point return
   __builtin_trap();
 }
@@ -78,20 +78,27 @@ void Fiber_switch(Fiber_t handle) {
   fiber_swap(active_fiber = handle, previous_fiber);
 }
 
-Fiber_t Fiber_create(void* memory, uint64_t size, void (*function)(void*), void* arguments) {
+Fiber_t Fiber_create(void* memory, uint64_t size, void (*function)(void)) {
   if (memory == (void *)0 || size < MIN_STACK_SIZE) {
     return 0;
   }
   Fiber_t handle = (Fiber_t)((((uint64_t)memory + size) & ~0xF) - sizeof(struct Fiber));
   
   uint64_t *p = (uint64_t*)(handle);            /* seek to top of stack */
-  *--p = (uint64_t)0;                           /* crash if entrypoint returns(actually not needed) */
+  *--p = (uint64_t)0;                           /* crash if entrypoint returns(actually not needed as Fiber wrapper have trap inside it) */
   *--p = (uint64_t)Fiber_wrapper;               /* Would be used as rax, Fiber_t handle argument is passed through fiber_swap */
   ((uint64_t*)handle)[0] = (uint64_t)p;         /* stack pointer */
   handle->func = (uint64_t)function;
-  handle->data = (uint64_t)arguments;
 
   return handle;
+}
+
+void Fiber_setargs(Fiber_t handle, void* data) {
+    handle->data = (uint64_t)data;
+}
+
+void* Fiber_getargs(Fiber_t handle) {
+    return (void*)handle->data;
 }
 
 #ifdef __cplusplus
