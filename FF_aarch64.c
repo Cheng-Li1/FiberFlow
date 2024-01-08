@@ -8,7 +8,7 @@ extern "C" {
 
 struct Fiber {
     // Structure to store the registers data
-    uint64_t registerPart[30];
+    uint64_t registerPart[24];
     // Function pointer
     uint64_t func;
     // Input data
