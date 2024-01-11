@@ -6,7 +6,6 @@
 extern "C" {
 #endif
 
-#define MIN_STACK_SIZE 0x1000
 #define AArch64_RegsterPart 0xd0
 #define AMD64_RegsterPart 0x80
 
