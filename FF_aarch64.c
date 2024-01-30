@@ -90,7 +90,7 @@ void Fiber_switch(Fiber_t handle) {
 }
 
 Fiber_t Fiber_create(void* memory, uint64_t size, void (*function)(void)) {
-  Fiber_t handle = (Fiber_t)((((uint64_t)memory + size) & ~0xF) - sizeof(struct Fiber));
+  Fiber_t handle = (Fiber_t)(((((uint64_t)memory + size) & ~0xF) - sizeof(struct Fiber)) & ~0xF);
   
   uint64_t* registers = (uint64_t *)handle;
   registers[0]  = (uint64_t)handle;              /* x16 (stack pointer) */

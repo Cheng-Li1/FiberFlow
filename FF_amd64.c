@@ -79,7 +79,7 @@ void Fiber_switch(Fiber_t handle) {
 }
 
 Fiber_t Fiber_create(void* memory, uint64_t size, void (*function)(void)) {
-  Fiber_t handle = (Fiber_t)((((uint64_t)memory + size) & ~0xF) - sizeof(struct Fiber));
+  Fiber_t handle = (Fiber_t)(((((uint64_t)memory + size) & ~0xF) - sizeof(struct Fiber)) & ~0xF);
   
   uint64_t *p = (uint64_t*)(handle);            /* seek to top of stack */
   *--p = (uint64_t)0;                           /* crash if entrypoint returns(actually not needed as Fiber wrapper have trap inside it) */
