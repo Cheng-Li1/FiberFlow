@@ -1,6 +1,5 @@
 #include "FiberFlow.h"
 #include "settings.h"
-#include <cstdint>
 #include <stdint.h>
 
 #ifdef __cplusplus
