@@ -19,7 +19,7 @@ struct Fiber {
 
 static thread_local Fiber_t active_fiber;
 static void (*fiber_swap)(Fiber_t, Fiber_t) = 0;
-static struct Fiber init_fiber;
+static thread_local struct Fiber init_fiber;
 
 /* 
   ARM 64-bit architecture (AAPCS64)
