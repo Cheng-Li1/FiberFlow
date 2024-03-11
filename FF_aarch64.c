@@ -6,9 +6,11 @@
 extern "C" {
 #endif
 
+#define AArch64_RegsterPart 0x18
+
 struct Fiber {
     // Structure to store the registers data
-    uint64_t registerPart[24];
+    uint64_t registerPart[AArch64_RegsterPart];
     // Function pointer
     uint64_t func;
     // Input data
@@ -17,6 +19,7 @@ struct Fiber {
 
 static thread_local Fiber_t active_fiber;
 static void (*fiber_swap)(Fiber_t, Fiber_t) = 0;
+static uint8_t init_fiber[sizeof(struct Fiber)];
 
 /* 
   ARM 64-bit architecture (AAPCS64)
@@ -75,9 +78,10 @@ static void Fiber_wrapper(Fiber_t handle) {
   __builtin_trap();
 }
 
-void Fiber_init(Fiber_t memory) {
-  active_fiber = memory;
+Fiber_t Fiber_init() {
+  active_fiber = (void *)init_fiber;
   fiber_swap = (void (*)(Fiber_t, Fiber_t))swap_function;
+  return active_fiber;
 }
 
 Fiber_t Fiber_active() {

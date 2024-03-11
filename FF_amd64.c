@@ -1,14 +1,17 @@
 #include "FiberFlow.h"
 #include "settings.h"
+#include <cstdint>
 #include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#define AMD64_RegsterPart 0xE
+
 struct Fiber {
     // Part of the structure that used to store the register data
-    uint64_t registerPart[14];
+    uint64_t registerPart[AMD64_RegsterPart];
     // Function pointer
     uint64_t func;
     // Input data
@@ -17,6 +20,7 @@ struct Fiber {
 
 static thread_local Fiber_t active_fiber;
 static void (*fiber_swap)(Fiber_t, Fiber_t) = 0;
+static uint8_t init_fiber[sizeof(struct Fiber)];
 
 /*  
     Those binary code save and restore the callee save registers which includes:
@@ -64,9 +68,10 @@ static void Fiber_wrapper(Fiber_t handle) {
   __builtin_trap();
 }
 
-void Fiber_init(Fiber_t memory) {
-  active_fiber = memory;
+Fiber_t Fiber_init() {
+  active_fiber = (void *)init_fiber;
   fiber_swap = (void (*)(Fiber_t, Fiber_t))swap_function;
+  return active_fiber;
 }
 
 Fiber_t Fiber_active() {
