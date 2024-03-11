@@ -19,7 +19,7 @@ struct Fiber {
 
 static thread_local Fiber_t active_fiber;
 static void (*fiber_swap)(Fiber_t, Fiber_t) = 0;
-static uint8_t init_fiber[sizeof(struct Fiber)];
+static struct Fiber init_fiber;
 
 /*  
     Those binary code save and restore the callee save registers which includes:
@@ -68,7 +68,7 @@ static void Fiber_wrapper(Fiber_t handle) {
 }
 
 Fiber_t Fiber_init() {
-  active_fiber = (void *)init_fiber;
+  active_fiber = &init_fiber;
   fiber_swap = (void (*)(Fiber_t, Fiber_t))swap_function;
   return active_fiber;
 }
