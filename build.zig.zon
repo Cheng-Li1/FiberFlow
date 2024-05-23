@@ -1,0 +1,9 @@
+.{ .name = "FiberFlow", .version = "0.1.0", .paths = .{
+    "FiberFlow.h",
+    "FiberFlow.c",
+    "FF_aarch64.c",
+    "FF_amd64.c",
+    "setting.h",
+    "build.zig",
+    "build.zig.zon",
+} }
