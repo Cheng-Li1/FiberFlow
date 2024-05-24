@@ -26,7 +26,7 @@ pub fn build(b: *std.Build) void {
     lib.addIncludePath(.{ .path = "." });
 
     // Add any additional compiler flags if needed
-    lib.addCSourceFile(.{ .file = b.path("FiberFlow.c") });
+    lib.addCSourceFile(.{ .file = b.path("FiberFlow.c"), .flags = &.{"-mstrict-align"} });
 
     b.installArtifact(lib);
 }
