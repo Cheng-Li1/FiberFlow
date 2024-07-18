@@ -23,7 +23,7 @@ pub fn build(b: *std.Build) void {
     });
 
     // Add include directory
-    lib.addIncludePath(.{ .path = "." });
+    lib.addIncludePath(.{ .cwd_relative = "." });
 
     // Add any additional compiler flags if needed
     lib.addCSourceFile(.{ .file = b.path("FiberFlow.c"), .flags = &.{"-mstrict-align"} });
